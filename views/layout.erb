@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Luuunch.com - Everyone has to eat lunch</title>
+  <meta name="description" content="A instagram site of your lunch photos">
+  <meta name="author" content="John Tajima">
+
+  <script type="text/javascript" charset="utf-8" src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+  <link rel="stylesheet" href="/stylesheets/app.css">
+
+  <style type="text/css">
+    body { padding-top: 60px; }
+  </style>
+</head>
+
+<body>
+  <div class="topbar" style='display:none'>
+    <div class="fill">
+      <div class="container">
+        <a class="brand" href="#">Lüüünch</a>
+        <ul class="nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <%= yield %>
+  
+    <footer>
+      <p>&copy; <a style='color:href="mailto:johntajima@gmail.com">John Tajima</a> 2011</p>
+    </footer>
+
+  </div> <!-- /container -->
+
+</body>
+</html>

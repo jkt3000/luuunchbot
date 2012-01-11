@@ -1,0 +1,49 @@
+<div class='page-header'>
+  <h1>Lüüünch...
+    <small>Everyone needs to eat lunch.</small>
+  </h1>
+  
+  <h3>Post your lunch photos to <a href="http://instagr.am">Instagram</a> with the hashtag #luuunch</h3>
+  
+</div>
+
+<div class='row'>
+  <div class="span16">
+    
+    <ul class="photos">
+      <% @photos.each do |photo| %>
+        <li>
+          <div class='image-frame'>
+            <a href="<%= photo.link %>" target="_blank"><img src="<%= photo.images.low_resolution.url%>" class='thumbnail' alt="<%= photo.caption.text %>" /></a>
+            
+            <div class='overlay' style='display:none'>
+              <div class='date'>
+                <h2><%= Time.at(photo.created_time.to_i).strftime("%b") %><br/>
+                  <%= Time.at(photo.created_time.to_i).strftime("%d") %>
+                </h2>
+              </div>
+              
+              <h5><% @title = photo.caption.text; photo.tags.each {|tag| @title = @title.gsub(/\##{tag}/,"") } %>
+                <%= @title %>
+                </h5>
+              <p class='byline'>from <%= photo.caption.from.username %> <br/>
+                Tagged: <%= photo.tags.map {|t| "##{t}"}.join(", ")%>
+                <span style='float:right'></span>
+              </p>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+$(function(){
+  $('.image-frame').hover(function(){
+    $(this).children('.overlay').fadeIn('fast');
+  }, function(){
+    $(this).children('.overlay').fadeOut('fast');
+  })
+})
+</script>
