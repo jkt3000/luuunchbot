@@ -21,11 +21,16 @@ GEM
       faraday_middleware (~> 0.3.1)
       hashie (>= 0.4.0)
       multi_json (~> 0.0.5)
+    json (1.6.4)
     mash (0.0.6)
+    mime-types (1.17.2)
     multi_json (0.0.5)
     multipart-post (1.1.4)
     oauth (0.3.6)
       ruby-hmac (>= 0.3.1)
+    posterous (0.2.8)
+      json
+      typhoeus
     rack (1.4.0)
     rack-protection (1.2.0)
       rack
@@ -43,6 +48,8 @@ GEM
       httparty (~> 0.4.3)
       mash (~> 0.0.3)
       oauth (~> 0.3.5)
+    typhoeus (0.3.3)
+      mime-types
 
 PLATFORMS
   ruby
@@ -51,6 +58,7 @@ DEPENDENCIES
   activesupport
   dalli
   instagram
+  posterous
   sinatra
   thin
   twitter

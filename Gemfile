@@ -5,4 +5,5 @@ gem 'sinatra'
 gem 'twitter'
 gem 'dalli'
 gem 'instagram'
+gem 'posterous'
 gem "activesupport", :require => "active_support"

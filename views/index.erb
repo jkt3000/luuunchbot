@@ -14,20 +14,18 @@
       <% @photos.each do |photo| %>
         <li>
           <div class='image-frame'>
-            <a href="<%= photo.link %>" target="_blank"><img src="<%= photo.images.low_resolution.url%>" class='thumbnail' alt="<%= photo.caption.text %>" /></a>
+            <a href="<%= photo[:link] %>" target="_blank"><img src="<%= photo[:medium_url] %>" class='thumbnail' alt="<%= photo[:title] %>" /></a>
             
             <div class='overlay' style='display:none'>
               <div class='date'>
-                <h2><%= Time.at(photo.created_time.to_i).strftime("%b") %><br/>
-                  <%= Time.at(photo.created_time.to_i).strftime("%d") %>
+                <h2><%= photo[:created_at].strftime("%b") %><br/>
+                  <%= photo[:created_at].strftime("%d") %>
                 </h2>
               </div>
               
-              <h5><% @title = photo.caption.text; photo.tags.each {|tag| @title = @title.gsub(/\##{tag}/,"") } %>
-                <%= @title %>
-                </h5>
-              <p class='byline'>from <%= photo.caption.from.username %> <br/>
-                Tagged: <%= photo.tags.map {|t| "##{t}"}.join(", ")%>
+              <h5><%= photo[:title] %></h5>
+              <p class='byline'>from <%= photo[:username] %> <br/>
+                Tagged: <%= photo[:tags].map {|t| "##{t}"}.join(", ") %>
                 <span style='float:right'></span>
               </p>
             </div>
