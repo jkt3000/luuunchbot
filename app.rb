@@ -4,12 +4,14 @@ require 'yaml'
 require 'instagram'
 require 'json'
 require 'dalli'
+require 'newrelic_rpm'
+require 'redis'
 require './parsers/instagram_parser'
 require './publishers/posterous_publisher'
+require './publishers/tumblr_publisher'
 
 use Rack::Session::Cookie
 
-enable :logging
 set :cache, Dalli::Client.new
 
 configure :development do
@@ -21,6 +23,7 @@ configure :development do
   POSTEROUS_USER  = KEYS['posterous']['username']
   POSTEROUS_PASS  = KEYS['posterous']['password']
   POSTEROUS_TOKEN = KEYS['posterous']['api_token']
+  REDISTOGO_URL   = KEYS['redistogo']['url']
 end
 
 configure :production do
@@ -30,79 +33,69 @@ configure :production do
   POSTEROUS_USER  = ENV['POSTEROUS_USER']
   POSTEROUS_PASS  = ENV['POSTEROUS_PASS']
   POSTEROUS_TOKEN = ENV['POSTEROUS_TOKEN']
-  
-  require 'newrelic_rpm'
+  REDISTOGO_URL   = ENV['REDISTOGO_URL']
 end
+
+redis_uri = URI.parse(REDISTOGO_URL)
+REDIS = Redis.new(:host => redis_uri.host, :port => redis_uri.port, :password => redis_uri.password)
 
 Instagram.configure do |config|
   config.client_id     = CLIENT_ID
   config.client_secret = CLIENT_SECRET
 end
 
+
 # Basic feed
 get "/" do
   response = Instagram.tag_recent_media('luuunch')
   @photos = InstagramParser.parse(response.data)
-  p @photos
-  @photos.each {|photo| settings.cache.add(photo[:id], photo) }
+  @photos.each do |photo| 
+    log( {photo[:id] => photo[:title]} )
+    settings.cache.add(photo[:id], photo)
+  end
   erb :index
+end
+
+get '/ping' do 
+  "ok"
 end
 
 # webhook callback url - respond back with 'hub.challenge'
 get '/webhook' do
-  p params
+  log(params)
+  params['hub.challenge']
 end
 
 post '/webhook' do
-  content = request.body.read
-  reply = JSON.parse(content)
-  return unless reply.any? {|e| e['object_id'] == 'luuunch' }
-
-  response = Instagram.tag_recent_media('luuunch')
-  photos = InstagramParser.parse(response.data)
+  if valid_webhook?(request)
+    response = Instagram.tag_recent_media('luuunch')
   
-  # find any that are cached - make posts of thoses
-  @processed, @unprocessed = photos.partition {|photo| settings.cache.get(photo[:id]) }
-  p "Unprocessed photos are #{@unprocessed.inspect}"
-  
-  # post to blog
-  @unprocessed.each do |photo|
-    if response = PosterousPublisher.publish(photo)
+    # parse
+    photos   = InstagramParser.parse(response.data)
+    
+    # filter
+    processed, unprocessed = photos.partition {|photo| settings.cache.get(photo[:id]) }
+    
+    # process
+    unprocessed.each do |photo|
+      tumblr_post = TumblrPublisher.publish(photo) 
+      # record finish processing
       settings.cache.set(photo[:id], photo)
-      p "==== Posted OK #{response.inspect}"
+      log("==== Processed #{photo[:id]} #{photo[:title]}")
     end
   end
   ""
 end
 
-get '/ping' do
-  "ok"
+
+
+
+def valid_webhook?(request)
+  content = request.body.read
+  reply = JSON.parse(content)
+  reply.any? {|e| e['object_id'] == 'luuunch' }
 end
 
-
-
-# oauth stuff
-get "/oauth/connect" do
-  redirect Instagram.authorize_url(:redirect_uri => CALLBACK_URL)
+def log(msg)
+  p msg
 end
-
-get "/oauth/callback" do
-  response = Instagram.get_access_token(params[:code], :redirect_uri => CALLBACK_URL)
-  session[:access_token] = response.access_token
-  redirect "/feed"
-end
-
-get "/feed" do
-  
-  client = Instagram.client(:access_token => session[:access_token])
-  user = client.user
-
-  html = "<h1>#{user.username}'s recent photos</h1>"
-  for media_item in client.user_recent_media
-    p media_item
-    break
-    html << "<img src='#{media_item.images.thumbnail.url}'>"
-  end
-  erb html
-end
-

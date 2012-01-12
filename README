@@ -1,0 +1,17 @@
+Simple sinatra app that listens on Instagram webhooks and performs
+actions each time your subscription webhook gets called.
+
+For luuunch.com, when ever I had an image with the #luuunch tag,
+it would publish a post to Instagram/Tumblr.
+
+Creating the instagram subscription was done manually via curl as per
+the api guide:
+
+curl -F 'client_id=CLIENT-ID' \
+     -F 'client_secret=CLIENT-SECRET' \
+     -F 'object=user' \
+     -F 'aspect=media' \
+     -F 'verify_token=myVerifyToken' \
+     -F 'callback_url=http://YOUR-CALLBACK/URL' \
+     https://api.instagram.com/v1/subscriptions/
+

@@ -1,9 +1,16 @@
+GIT
+  remote: https://github.com/andreas/tumblr.git
+  revision: 601beec1262b786fc4502448a4df61af6e0404e3
+  specs:
+    tumblr-api (0.1.3)
+      activesupport
+      httparty
+
 GEM
   remote: http://rubygems.org/
   specs:
     activesupport (3.0.11)
     addressable (2.2.6)
-    crack (0.3.1)
     daemons (1.1.5)
     dalli (1.1.4)
     eventmachine (0.12.10)
@@ -14,28 +21,31 @@ GEM
     faraday_middleware (0.3.2)
       faraday (~> 0.5.4)
     hashie (1.2.0)
-    httparty (0.4.5)
-      crack (>= 0.1.1)
+    httparty (0.8.1)
+      multi_json
+      multi_xml
+    httparty-icebox (0.0.4)
+      httparty (~> 0.8.1)
     instagram (0.8)
       faraday (~> 0.5.4)
       faraday_middleware (~> 0.3.1)
       hashie (>= 0.4.0)
       multi_json (~> 0.0.5)
     json (1.6.4)
-    mash (0.0.6)
+    mash (0.1.1)
     mime-types (1.17.2)
     multi_json (0.0.5)
+    multi_xml (0.4.1)
     multipart-post (1.1.4)
     newrelic_rpm (3.3.1)
-    oauth (0.3.6)
-      ruby-hmac (>= 0.3.1)
+    oauth (0.4.5)
     posterous (0.2.8)
       json
       typhoeus
     rack (1.4.0)
     rack-protection (1.2.0)
       rack
-    ruby-hmac (0.4.0)
+    redis (2.2.2)
     sinatra (1.3.2)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
@@ -45,10 +55,10 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     tilt (1.3.3)
-    twitter (0.7.4)
-      httparty (~> 0.4.3)
-      mash (~> 0.0.3)
-      oauth (~> 0.3.5)
+    twitter (0.6.3)
+      httparty (>= 0.4.2)
+      mash
+      oauth
     typhoeus (0.3.3)
       mime-types
 
@@ -58,9 +68,12 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   dalli
+  httparty-icebox
   instagram
   newrelic_rpm
   posterous
+  redis
   sinatra
   thin
+  tumblr-api!
   twitter

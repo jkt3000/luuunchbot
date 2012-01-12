@@ -1,17 +1,5 @@
 module InstagramParser
-  
-# return back array of hashes  
-# {
-#   :caption
-#   :created_at
-#   :small_url
-#   :medium_url
-#   :large_url
-#   :link_url
-#   :tags
-#   :username
-# }
-  
+
   def self.parse(data)
     photos = data.map do |entry|
       photo = {
@@ -25,11 +13,11 @@ module InstagramParser
         :tags       => entry.tags,
         :username   => entry.caption.from.username
       }
-      photo[:tags].each {|tag| photo[:title].gsub!(/\##{tag}/,"") }
+      photo[:tags].each {|tag| photo[:title].gsub!(/\##{tag}/,"") } # strip out tags from title
       photo[:title].strip!
       photo[:tags].reject! {|t| t == 'luuunch' }
       photo
     end
   end
-  
+    
 end
