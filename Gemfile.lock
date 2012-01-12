@@ -26,6 +26,7 @@ GEM
     mime-types (1.17.2)
     multi_json (0.0.5)
     multipart-post (1.1.4)
+    newrelic_rpm (3.3.1)
     oauth (0.3.6)
       ruby-hmac (>= 0.3.1)
     posterous (0.2.8)
@@ -58,6 +59,7 @@ DEPENDENCIES
   activesupport
   dalli
   instagram
+  newrelic_rpm
   posterous
   sinatra
   thin

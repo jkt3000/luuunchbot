@@ -30,11 +30,8 @@ configure :production do
   POSTEROUS_USER  = ENV['POSTEROUS_USER']
   POSTEROUS_PASS  = ENV['POSTEROUS_PASS']
   POSTEROUS_TOKEN = ENV['POSTEROUS_TOKEN']
-  # Configure stuff here you'll want to
-  # only be run at Heroku at boot
-
-  # TIP:  You can get you database information
-  #       from ENV['DATABASE_URI'] (see /env route below)
+  
+  require 'newrelic_rpm'
 end
 
 Instagram.configure do |config|
@@ -53,8 +50,6 @@ end
 
 # webhook callback url - respond back with 'hub.challenge'
 get '/webhook' do
-  # params: 'hub.mode', 'hub.challenge', 'hub.verify_token'
-  p 'GET /webhook'
   p params
 end
 
@@ -80,6 +75,9 @@ post '/webhook' do
   ""
 end
 
+get '/ping' do
+  "ok"
+end
 
 
 
